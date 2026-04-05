@@ -17,10 +17,13 @@ def client():
 @pytest.mark.asyncio
 async def test_fetch_users(client):
     respx.get("http://openwebui:8080/api/v1/users/all").mock(
-        return_value=httpx.Response(200, json=[
-            {"id": "uuid-1", "email": "jmc@example.com", "name": "jmc"},
-            {"id": "uuid-2", "email": "anna@example.com", "name": "anna"},
-        ])
+        return_value=httpx.Response(200, json={
+            "users": [
+                {"id": "uuid-1", "email": "jmc@example.com", "name": "jmc"},
+                {"id": "uuid-2", "email": "anna@example.com", "name": "anna"},
+            ],
+            "total": 2,
+        })
     )
     users = await client.fetch_users()
     assert users == {"jmc@example.com": "uuid-1", "anna@example.com": "uuid-2"}

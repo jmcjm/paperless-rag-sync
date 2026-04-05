@@ -46,7 +46,8 @@ class OpenWebUIClient:
         resp = await self._request_with_retry(
             "GET", f"{self._base_url}/api/v1/users/all"
         )
-        users = resp.json()
+        data = resp.json()
+        users = data.get("users", data) if isinstance(data, dict) else data
         return {u["email"]: u["id"] for u in users if u.get("email")}
 
     async def create_knowledge_base(
